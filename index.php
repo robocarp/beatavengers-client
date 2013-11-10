@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>ROBOCARP :: BEAT AVENGERS</h1>
-<script type="text/javascript" src="build/enchant.js"></script>
+<script type="text/javascript" src="enchant/enchant.js"></script>
 <script type="text/javascript" src="https://w.soundcloud.com/player/api.js"></script>
 <script src="http://connect.soundcloud.com/sdk.js"></script>
 <script>
@@ -19,7 +19,7 @@
     SC.connect();
     */
 </script>
-<script src="node_modules/socket.io/node_modules/socket.io-client/dist/socket.io.min.js"></script>
+<script src="socket/socket.io.min.js"></script>
 <script>
     var socket = io.connect('http://localhost:8080');
     socket.on('news', function (data) {
