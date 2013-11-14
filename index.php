@@ -32,6 +32,7 @@
     });
 </script>
 <script type="text/javascript" src="SoundCloudHandler.js"></script>
+<script type="text/javascript" src="game_classes.js"></script>
 <script type="text/javascript" src="Main.js"></script>
 </body>
 </html>
