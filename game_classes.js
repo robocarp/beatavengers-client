@@ -13,40 +13,32 @@ var init_Game = enchant.Class.create(enchant.Scene,{
 });
 
 //----------- Button Event ------------------\\
-Local_Player_Input = function (ConsoleClass) {
+var Local_Player_Input = function (ConsoleClass) {
     // BUTTON UP
-    //var game = enchant.Core.instance;
-    //ConsoleClass.addEventListener(Event.ENTER_FRAME, function () {
-    if (game.input.up && !UP_STATE) {
-        UP_STATE = true;
-        ConsoleClass.arrowBase.ArrowUp.tl.fadeIn(3);
+    var game = enchant.Core.instance;
+    var test = game.input.up;
+    if (game.input.up) {
+        ConsoleClass.arrowBase.ArrowUp.opacity = 1;
     }
-    if (!game.input.up && UP_STATE) {
-        UP_STATE = false;
+    if (!game.input.up) {
         ConsoleClass.arrowBase.ArrowUp.tl.fadeOut(3);
     }
-    if (game.input.down && !DOWN_STATE) {
-        DOWN_STATE = true;
-        ConsoleClass.arrowBase.ArrowDown.tl.fadeIn(3);
+    if (game.input.down) {
+        ConsoleClass.arrowBase.ArrowDown.opacity = 1;
     }
-    if (!game.input.down && DOWN_STATE) {
-        DOWN_STATE = false;
+    if (!game.input.down) {
         ConsoleClass.arrowBase.ArrowDown.tl.fadeOut(3);
     }
-    if (game.input.left && !LEFT_STATE) {
-        LEFT_STATE = true;
-        ConsoleClass.arrowBase.ArrowLeft.tl.fadeIn(3);
+    if (game.input.left) {
+        ConsoleClass.arrowBase.ArrowLeft.opacity = 1;
     }
-    if (!game.input.left && LEFT_STATE) {
-        LEFT_STATE = false;
+    if (!game.input.left) {
         ConsoleClass.arrowBase.ArrowLeft.tl.fadeOut(3);
     }
-    if (game.input.right && !RIGHT_STATE) {
-        RIGHT_STATE = true;
-        ConsoleClass.arrowBase.ArrowRight.tl.fadeIn(3);
+    if (game.input.right) {
+        ConsoleClass.arrowBase.ArrowRight.opacity = 1;
     }
-    if (!game.input.right && RIGHT_STATE) {
-        RIGHT_STATE = false;
+    if (!game.input.right) {
         ConsoleClass.arrowBase.ArrowRight.tl.fadeOut(3);
     }
     //});

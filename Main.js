@@ -20,13 +20,13 @@ var POS_ARROW_DOWN =        2;
 var POS_ARROW_LEFT =        0;
 var POS_ARROW_RIGHT =       3;
 var ARROW_GLOW_OFFSET =     29;
-var UP_STATE =              false;
-var DOWN_STATE =            false;
-var LEFT_STATE =            false;
-var RIGHT_STATE =           false;
+//var UP_STATE =              false;
+//var DOWN_STATE =            false;
+//var LEFT_STATE =            false;
+//var RIGHT_STATE =           false;
 
 window.onload = function() {
-    var Local_Player_Input;
+    //var Local_Player_Input;
     init_Game();
     var game = enchant.Core.instance;
     scwidget = new SoundCloudHandler('https://soundcloud.com/darkbydesign-official/the-monster-beat-dbd-135bpm');
@@ -40,25 +40,32 @@ window.onload = function() {
         game.rootScene.addChild(remote_Console);
         game.rootScene.backgroundColor = '#080808';
 
+        var beat = window.setInterval;
         game.addEventListener("enterframe", function(){
             Local_Player_Input(local_Console);
-            //Local_Player_Input(remote_Console);
+            Local_Player_Input(remote_Console);
             if(game.frame == startDelay){
                 scwidget.startSong();
             }
             if(arrowStart && game.frame == startDelay){
                 //*********BEAT**********\\
-                setInterval(function(){
+                beat(function(){
                     //game.assets[SND_BEAT_HIT].clone().play();
                     var arrowPose = Math.floor((Math.random()*4));
                     var beatarrow = new beatArrow(arrowPose, local_Console.x, local_Console.y);
                 },1000/game.bpm*60);
             }
         });
+        game.rootScene.addEventListener(enchant.Event.TOUCH_START,function(){
+            window.clearInterval(beat);
+            game.pause();
+        })
         game.rootScene.addEventListener('startSong',function(){
             songStart = true;
             //arrowStart = true;
         });
+
+
 
         game.rootScene.addEventListener('songReady',function(){
             beginText();
@@ -125,48 +132,7 @@ window.onload = function() {
         }
     });
 
-// +------------------------------+
-// |      CONSOLE CLASS           |
-// +------------------------------+
-    //----------- Button Event ------------------\\
-    Local_Player_Input = function (ConsoleClass) {
-        // BUTTON UP
-        //var game = enchant.Core.instance;
-        //ConsoleClass.addEventListener(Event.ENTER_FRAME, function () {
-        if (game.input.up && !UP_STATE) {
-            UP_STATE = true;
-            ConsoleClass.arrowBase.ArrowUp.tl.fadeIn(3);
-        }
-        if (!game.input.up && UP_STATE) {
-            UP_STATE = false;
-            ConsoleClass.arrowBase.ArrowUp.tl.fadeOut(3);
-        }
-        if (game.input.down && !DOWN_STATE) {
-            DOWN_STATE = true;
-            ConsoleClass.arrowBase.ArrowDown.tl.fadeIn(3);
-        }
-        if (!game.input.down && DOWN_STATE) {
-            DOWN_STATE = false;
-            ConsoleClass.arrowBase.ArrowDown.tl.fadeOut(3);
-        }
-        if (game.input.left && !LEFT_STATE) {
-            LEFT_STATE = true;
-            ConsoleClass.arrowBase.ArrowLeft.tl.fadeIn(3);
-        }
-        if (!game.input.left && LEFT_STATE) {
-            LEFT_STATE = false;
-            ConsoleClass.arrowBase.ArrowLeft.tl.fadeOut(3);
-        }
-        if (game.input.right && !RIGHT_STATE) {
-            RIGHT_STATE = true;
-            ConsoleClass.arrowBase.ArrowRight.tl.fadeIn(3);
-        }
-        if (!game.input.right && RIGHT_STATE) {
-            RIGHT_STATE = false;
-            ConsoleClass.arrowBase.ArrowRight.tl.fadeOut(3);
-        }
-        //});
-    };
+
     var console = enchant.Class.create(enchant.Group,{
         initialize: function(x,y, name){
             enchant.Group.call(this);
@@ -183,21 +149,14 @@ window.onload = function() {
     var local_console = enchant.Class.create(console,{
         initialize: function(x,y, name){
             console.call(this,x, y, name);
-            /*this.addEventListener(Event.ENTER_FRAME, function(){
-                Local_Player_Input(this)
-            });*/
+
         }
     });
     var remote_console = enchant.Class.create(console,{
         initialize: function(x,y, name){
             console.call(this, x, y, name);
-            /*this.addEventListener(Event.ENTER_FRAME, function(){
-                Local_Player_Input(this)
-            });*/
         }
     });
-
-
 
 
     //------------ Beat Arrow -------------------\\
