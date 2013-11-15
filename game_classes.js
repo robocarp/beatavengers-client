@@ -5,7 +5,7 @@
 var init_Game = enchant.Class.create(enchant.Scene,{
     initialize: function(bpm){
         var game = new Core(1388, 732);
-        game.rootScene.backgroundColor = "#f00";
+        game.rootScene.backgroundColor = "#411";
         game.preload(preLoadFiles());
         game.fps = fps;
         game.bpm = 135;
@@ -41,5 +41,4 @@ var Local_Player_Input = function (ConsoleClass) {
     if (!game.input.right) {
         ConsoleClass.arrowBase.ArrowRight.tl.fadeOut(3);
     }
-    //});
 };

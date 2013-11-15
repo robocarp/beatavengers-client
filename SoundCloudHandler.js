@@ -81,6 +81,9 @@ SoundCloudHandler.prototype = {
     startSong: function(){
         this.widget.play();
     },
+    pauseSong: function(){
+        this.widget.pause();
+    },
     publishToEnchant: function(){
 
     },
