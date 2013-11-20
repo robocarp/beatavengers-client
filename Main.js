@@ -15,6 +15,7 @@ var IMG_CONSOLE_BG =        "img/consoleBg.png";
 var IMG_CONSOLE_ARROWS =    "img/consoleArrows.png";
 var IMG_BEAT_ARROWS =       "img/ArrowsGlow.png";
 var IMG_BEAT_LINE =         "img/consoleLine.png";
+var IMG_START_TEXT =        "img/battleText.png";
 var SND_BEAT_HIT =          "sound/hit2.mp3";
 var POS_ARROW_UP =          1;
 var POS_ARROW_DOWN =        2;
@@ -76,14 +77,16 @@ window.onload = function() {
         game.rootScene.addEventListener(enchant.Event.TOUCH_START,function(){
             game.Toggle_Pause();
             //window.clearInterval(beat);
-        })
+        });
         game.rootScene.addEventListener('startSong',function(){
             songStart = true;
             //arrowStart = true;
         });
 
         game.rootScene.addEventListener('songReady',function(){
-            beginText();
+            //beginText();
+            local_Console.StartText();
+            remote_Console.StartText();
             arrowStart = true;
             arrowStartDelay += game.frame + arrowStartDelay;
         });
@@ -91,9 +94,10 @@ window.onload = function() {
         game.rootScene.addEventListener('songInfoLoaded',function(){
             var songTitle = new Label();
             songTitle.font = "13px Helvetica";
+            songTitle.textAlign = "center";
             songTitle.text = scwidget.getSongTitle();
             songTitle.color = "#f8b800";
-            songTitle.x = 280;
+            songTitle.x = 380;
             songTitle.y = 20;
             game.rootScene.addChild(songTitle);
         });
@@ -103,33 +107,6 @@ window.onload = function() {
         });
     };
     game.start();
-
-    // -------- Start Text -------- \\
-    var beginText = enchant.Class.create(enchant.Sprite,{
-        initialize: function(){
-            enchant.Sprite.call(this,83 ,41);
-            //this.image = game.assets["img/battleText.png"]; @TODO
-            this.frame = 0;
-            this.x = 92;
-            this.y = 150;
-            this.opacity = 0;
-            game.rootScene.addChild(this);
-            this.addEventListener("enterframe",function(){
-                if(this.age < 60){
-                    var _this = this;
-                    this.tl.fadeIn(30).fadeOut(30).then(function(){_this.opacity=0;});
-                }
-                if(this.age == 60){
-                  this.frame = 1;
-                  this.opacity = 0;
-                  this.tl.fadeIn(5).fadeOut(7).fadeIn(7).fadeOut(10);
-                }
-                if(this.age >= 95){
-                    game.rootScene.removeChild(this);
-                }
-            });
-        }
-    });
 
     // ---------  Base Arrows Class---------- \\
     var ArrowBase = enchant.Class.create(enchant.Group,{
@@ -148,7 +125,7 @@ window.onload = function() {
         }
     });
 
-
+    //--------------- CONSOLE CLASS ----------------\\
     var console = enchant.Class.create(enchant.Group,{
         initialize: function(x,y, name){
             enchant.Group.call(this);
@@ -156,6 +133,8 @@ window.onload = function() {
             this.x = x;
             this.y = y;
             this.input = null;
+            this.width = 362;
+            this.height = 732;
             var img_background = new enchant.Sprite(362,732);
             img_background.image = game.assets[IMG_CONSOLE_BG];
             var beatLine = new enchant.Sprite(373, 10);
@@ -165,12 +144,28 @@ window.onload = function() {
             this.arrowBase = ArrowBase();
             this.addChild(this.arrowBase);
             this.addChild(beatLine);
-
+            var _this = this;
             this.SetInput = function(inputControler){
                 this.input = inputControler;
             };
             this.spawnArrows = function(arrowPose){
                 new beatArrow(arrowPose, this);
+            };
+            this.StartText = function(){
+                var startText = new enchant.Sprite(166, 82);
+                startText.image = game.assets[IMG_START_TEXT];
+                startText.frame = 0;
+                startText.x = this.width/2 - startText.width/2;
+                startText.y = 260;
+                startText.opacity = 1;
+                this.addChild(startText);
+                startText.tl.fadeIn(30).fadeOut(30).then(function(){
+                    startText.opacity=0;
+                    startText.frame = 1;
+                    startText.tl.fadeIn(5).fadeOut(9).fadeIn(9).fadeOut(6).fadeIn(6).fadeOut(20).then(function(){
+                        _this.removeChild(startText);
+                    });
+                });
             };
             this.addEventListener('beathit',function(){
                 beatLine.opacity = 1;
@@ -180,6 +175,8 @@ window.onload = function() {
             })
         }
     });
+
+    // -------------- LOCAL CONSOLE ---------------------\\
     var local_console = enchant.Class.create(console,{
         initialize: function(x,y, name){
             console.call(this,x, y, name);
@@ -189,6 +186,8 @@ window.onload = function() {
             });
         }
     });
+
+    // -------------- Remote CONSOLE ---------------------\\
     var remote_console = enchant.Class.create(console,{
         initialize: function(x,y, name){
             console.call(this, x, y, name);
@@ -280,7 +279,7 @@ function preLoadFiles(){
     fileList.push(SND_BEAT_HIT);
     fileList.push(IMG_BEAT_ARROWS);
     fileList.push(IMG_BEAT_LINE);
-    //fileList.push("img/Arrow.png");
+    fileList.push(IMG_START_TEXT);
     //fileList.push("img/battleText.png");
     //fileList.push("sound/hit2.mp3");
     return(fileList);
