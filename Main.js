@@ -35,6 +35,7 @@ window.onload = function() {
     scwidget = new SoundCloudHandler('https://soundcloud.com/darkbydesign-official/the-monster-beat-dbd-135bpm');
 
     game.onload = function(){
+        scwidget.changeVolume(50);   //volume 0-100
         this.arrowStart = null;
         var local_Console = new local_console(30,0, 'local');
         var remote_Console = new remote_console(800,0, 'remote');

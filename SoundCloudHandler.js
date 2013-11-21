@@ -81,6 +81,10 @@ SoundCloudHandler.prototype = {
     startSong: function(){
         this.widget.play();
     },
+    changeVolume: function(vol){
+        //this.widget.setVolume(vol); //@TODO Not able to change volume....
+        //this.widget.setVolume(vol);
+    },
     pauseSong: function(){
         this.widget.pause();
     },
