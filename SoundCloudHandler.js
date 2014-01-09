@@ -74,7 +74,9 @@ SoundCloudHandler.prototype = {
         return this.song.user_id
 
     } else { return "" } },
-    getSongLength: function() { if(this.song){ return this.song.title } else { return "" } },
+    getSongLength: function() { if(this.song){
+        return this.song.duration;
+    } else { return "" } },
     loadRandomUrl: function(){
 
     },

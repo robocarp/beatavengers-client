@@ -30,16 +30,25 @@ var ARROW_GLOW_OFFSET =     29;
 window.onload = function() {
     //var Local_Player_Input;
     init_Game();
+    var fps = new Label();
     var game = enchant.Core.instance;
+    var song;
+    var beatNumber = 0;
+    var songHalfBeats;
     game.paused = false;
-    scwidget = new SoundCloudHandler('https://soundcloud.com/darkbydesign-official/the-monster-beat-dbd-135bpm');
+    //scwidget = new SoundCloudHandler('https://soundcloud.com/darkbydesign-official/the-monster-beat-dbd-135bpm');
+    scwidget = new SoundCloudHandler('https://soundcloud.com/dave-gold-1/dave-gold-put-that-cookie-down');
+    //scwidget = new SoundCloudHandler('https://soundcloud.com/user73250/15-put-that-cookie-now');
+    //scwidget = new SoundCloudHandler('https://soundcloud.com/erb/michael-jordan-muhammad-ali');
+    //scwidget = new SoundCloudHandler('https://soundcloud.com/hrs-das-hotelportal/hrs-piano');
+    //scwidget = new SoundCloudHandler('https://soundcloud.com/muckduck/cookie-pervert-speed-trance');
+
 
     game.onload = function(){
         scwidget.changeVolume(50);   //volume 0-100
         this.arrowStart = null;
         var local_Console = new local_console(30,0, 'local');
         var remote_Console = new remote_console(800,0, 'remote');
-
         game.rootScene.addChild(local_Console);
         game.rootScene.addChild(remote_Console);
         game.rootScene.backgroundColor = '#080808';
@@ -56,6 +65,9 @@ window.onload = function() {
         };
         var beat = window.setInterval;
         game.addEventListener("enterframe", function(){
+            if(game.frame % 10 == 0){
+                fps.text = Math.round(game.actualFps)+":"+beatNumber;
+            }
             if(game.frame == startDelay){
                 scwidget.startSong();
             }
@@ -63,17 +75,23 @@ window.onload = function() {
                 //*********BEAT**********\\
                 beat(function(){
                     //game.assets[SND_BEAT_HIT].clone().play();
-                    if(!game.paused){
-                        var arrowPose = Math.floor((Math.random()*4));
-                        local_Console.spawnArrows(arrowPose);
-                        remote_Console.spawnArrows(arrowPose);
+                    if(!game.paused && beatNumber < songHalfBeats){
+                        //var arrowPose = Math.floor((Math.random()*4));
+                        var arrowPose = song.pop();
+                        for (var i=0; i<3; i++){
+                            if(arrowPose[i]){
+                                local_Console.spawnArrows(i);
+                                remote_Console.spawnArrows(i);
+                            }
+                        }
                         var beat = new enchant.Event('beathit');
                         local_Console.dispatchEvent(beat);
                         remote_Console.dispatchEvent(beat);
-
+                        beatNumber ++;
                     }
-                },1000/game.bpm*60);
+                },(1000/game.bpm*60)/2);
             }
+
         });
         game.rootScene.addEventListener(enchant.Event.TOUCH_START,function(){
             game.Toggle_Pause();
@@ -88,11 +106,14 @@ window.onload = function() {
             //beginText();
             local_Console.StartText();
             remote_Console.StartText();
+            scwidget.changeVolume(50);
             arrowStart = true;
             arrowStartDelay += game.frame + arrowStartDelay;
         });
 
         game.rootScene.addEventListener('songInfoLoaded',function(){
+            var songLength = scwidget.getSongLength();
+            song = buildSong(songLength);
             var songTitle = new Label();
             songTitle.font = "13px Helvetica";
             songTitle.textAlign = "center";
@@ -100,7 +121,16 @@ window.onload = function() {
             songTitle.color = "#f8b800";
             songTitle.x = 380;
             songTitle.y = 20;
+
+
+            fps.font = "13px Helvetica";
+            fps.textAlign = 'center';
+            fps.text = game.actualFps + ":" + beatNumber;
+            fps.color = "#ffa800";
+            fps.x = 380;
+            fps.y = 40;
             game.rootScene.addChild(songTitle);
+            game.rootScene.addChild(fps);
         });
 
         this.rootScene.addEventListener(Event.DOWN_BUTTON_DOWN, function(){
@@ -108,7 +138,46 @@ window.onload = function() {
         });
     };
     game.start();
-
+    var buildSong = function(songLength){
+        var BeatsPerMillisecond = game.bpm/1000/60;
+        var songBeats = BeatsPerMillisecond * (songLength -(songLength * 0.10));
+        songHalfBeats = songBeats *2;
+        var song = [];
+        for (var i=0; i<songHalfBeats; i++){
+            var doHalfBeat     = Math.random() < 0.03;                          // Do a half beat 5% of the time
+            var doMultiArrow   = Math.random() < 0.10;                          // Do multiple arrows on a line 25% of the time.
+            var doBeat         = Math.random() < 0.85;                          // Do a beat 85% of the time.
+            var HalfBeat     = !(i % 2 == 0);
+            var thisBeat = [false,false,false,false];
+            if( HalfBeat && doHalfBeat){
+                var beatLocation = Math.floor(Math.random()* 4);
+                thisBeat[beatLocation] = true;
+                if(doMultiArrow){
+                    do{
+                        var nextBeatLocation = Math.floor(Math.random()* 4)
+                        if(!beatLocation == nextBeatLocation){
+                           thisBeat[nextBeatLocation] = true;
+                        }
+                    }while(nextBeatLocation == beatLocation)
+                }
+            }
+            else if(doBeat && !HalfBeat){
+                var beatLocation = Math.floor(Math.random()* 4);
+                thisBeat[beatLocation] = true;
+                if(doMultiArrow){
+                    do{
+                        var nextBeatLocation = Math.floor(Math.random()* 4);
+                        if(!beatLocation == nextBeatLocation){
+                            thisBeat[nextBeatLocation] = true;
+                        }
+                    }while(nextBeatLocation == beatLocation)
+                }
+            }
+            song.push(thisBeat);
+        }
+        return(song);
+        window.console.log(songBeats);
+    }
     // ---------  Base Arrows Class---------- \\
     var ArrowBase = enchant.Class.create(enchant.Group,{
         initialize: function(x, y){
