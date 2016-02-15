@@ -36,8 +36,9 @@ window.onload = function() {
     var beatNumber = 0;
     var songHalfBeats;
     game.paused = false;
+  
     //scwidget = new SoundCloudHandler('https://soundcloud.com/darkbydesign-official/the-monster-beat-dbd-135bpm');
-    scwidget = new SoundCloudHandler('https://soundcloud.com/dave-gold-1/dave-gold-put-that-cookie-down');
+    scwidget = new SoundCloudHandler('https://soundcloud.com/realityoverdose/dave-gold-put-that-cookie-down');//135bpm
     //scwidget = new SoundCloudHandler('https://soundcloud.com/user73250/15-put-that-cookie-now');
     //scwidget = new SoundCloudHandler('https://soundcloud.com/erb/michael-jordan-muhammad-ali');
     //scwidget = new SoundCloudHandler('https://soundcloud.com/hrs-das-hotelportal/hrs-piano');
